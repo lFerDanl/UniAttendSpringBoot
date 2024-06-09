@@ -24,6 +24,9 @@ public class  UniAttendApplication {
 			Usuario.setCity("Santa Cruz");
 			Usuario.setRole("ADMIN");
 			Usuario.setName("Santiago");
+			Usuario.setTelefono("75551574");
+			Usuario.setDireccion("C/hola");
+			Usuario.setCi("9767661");
 			Usuario.setPassword("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6");
 			userRepository.save(Usuario);
 		};

@@ -23,6 +23,9 @@ public class ReqRes {
     private String role;
     private String email;
     private String password;
+    private String telefono;
+    private String direccion;
+    private String ci;
     private UserEntity ourUsers;
     private List<UserEntity> ourUsersList;
 

@@ -37,6 +37,9 @@ public class UsersManagementService {
             ourUser.setCity(registrationRequest.getCity());
             ourUser.setRole(registrationRequest.getRole());
             ourUser.setName(registrationRequest.getName());
+            ourUser.setTelefono(registrationRequest.getTelefono());
+            ourUser.setDireccion(registrationRequest.getDireccion());
+            ourUser.setCi(registrationRequest.getCi());
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             UserEntity ourUsersResult = usersRepo.save(ourUser);
             if (ourUsersResult.getId()>0) {
@@ -75,11 +78,6 @@ public class UsersManagementService {
         }
         return response;
     }
-
-
-
-
-
     public ReqRes refreshToken(ReqRes refreshTokenReqiest){
         ReqRes response = new ReqRes();
         try{
@@ -106,7 +104,6 @@ public class UsersManagementService {
 
     public ReqRes getAllUsers() {
         ReqRes reqRes = new ReqRes();
-
         try {
             List<UserEntity> result = usersRepo.findAll();
             if (!result.isEmpty()) {
@@ -124,8 +121,6 @@ public class UsersManagementService {
             return reqRes;
         }
     }
-
-
     public ReqRes getUsersById(Integer id) {
         ReqRes reqRes = new ReqRes();
         try {
@@ -139,8 +134,6 @@ public class UsersManagementService {
         }
         return reqRes;
     }
-
-
     public ReqRes deleteUser(Integer userId) {
         ReqRes reqRes = new ReqRes();
         try {
@@ -170,6 +163,9 @@ public class UsersManagementService {
                 existingUser.setName(updatedUser.getName());
                 existingUser.setCity(updatedUser.getCity());
                 existingUser.setRole(updatedUser.getRole());
+                existingUser.setTelefono(updatedUser.getTelefono());
+                existingUser.setDireccion(updatedUser.getDireccion());
+                existingUser.setCi(updatedUser.getCi());
 
                 // Check if password is present in the request
                 if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
@@ -191,8 +187,6 @@ public class UsersManagementService {
         }
         return reqRes;
     }
-
-
     public ReqRes getMyInfo(String email){
         ReqRes reqRes = new ReqRes();
         try {
@@ -211,6 +205,5 @@ public class UsersManagementService {
             reqRes.setMessage("Error occurred while getting user info: " + e.getMessage());
         }
         return reqRes;
-
     }
 }
