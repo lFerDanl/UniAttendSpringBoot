@@ -22,6 +22,10 @@ public class UserEntity implements UserDetails {
     private String password;
     private String city;
     private String role;
+    private String telefono;
+    private String direccion;
+    private String ci;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
