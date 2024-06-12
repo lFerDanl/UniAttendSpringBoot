@@ -9,13 +9,16 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(name = "horarios")
+@Table(name = "aulas")
 @Data
-public class Horario {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Aula {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String dia;
-    private String horarioInicio;
-    private String horarioFin;
+    private String nro;
+    private String capacidad;
+
+    @ManyToMany(mappedBy = "aulas")
+    private List<Modulo> modulos;
 }

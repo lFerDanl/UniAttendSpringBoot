@@ -1,6 +1,6 @@
 package UniAttend.controller;
 
-import UniAttend.dto.ReqRes;
+import UniAttend.request.ReqRes;
 import UniAttend.entity.UserEntity;
 import UniAttend.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class UserManagementController {
     }
 
     @PutMapping("/admin/update/{userId}")
-    public ResponseEntity<ReqRes> updateUser(@PathVariable Integer userId, @RequestBody UserEntity reqres){
+    public ResponseEntity<ReqRes> updateUser(@PathVariable Integer userId, @RequestBody ReqRes reqres){
         return ResponseEntity.ok(usersManagementService.updateUser(userId, reqres));
     }
 
