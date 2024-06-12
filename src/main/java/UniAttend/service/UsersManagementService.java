@@ -1,10 +1,11 @@
 package UniAttend.service;
 
-import UniAttend.dto.ReqRes;
+import UniAttend.dto.ModuloDTO;
+import UniAttend.dto.UserDTO;
+import UniAttend.request.ReqRes;
 import UniAttend.entity.UserEntity;
 import UniAttend.repository.UserRepository;
 import UniAttend.util.JWTUtils;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersManagementService {
@@ -43,7 +45,7 @@ public class UsersManagementService {
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             UserEntity ourUsersResult = usersRepo.save(ourUser);
             if (ourUsersResult.getId()>0) {
-                resp.setOurUsers((ourUsersResult));
+                resp.setOurUsers((new UserDTO(ourUsersResult)));
                 resp.setMessage("User Saved Successfully");
                 resp.setStatusCode(200);
             }
@@ -105,9 +107,10 @@ public class UsersManagementService {
     public ReqRes getAllUsers() {
         ReqRes reqRes = new ReqRes();
         try {
-            List<UserEntity> result = usersRepo.findAll();
-            if (!result.isEmpty()) {
-                reqRes.setOurUsersList(result);
+            List<UserEntity> users = usersRepo.findAll();
+            List<UserDTO> userDTOs = users.stream().map(UserDTO::new).collect(Collectors.toList());
+            if (!userDTOs.isEmpty()) {
+                reqRes.setOurUsersList(userDTOs);
                 reqRes.setStatusCode(200);
                 reqRes.setMessage("Successful");
             } else {
@@ -125,7 +128,7 @@ public class UsersManagementService {
         ReqRes reqRes = new ReqRes();
         try {
             UserEntity usersById = usersRepo.findById(Long.valueOf(id)).orElseThrow(() -> new RuntimeException("User Not found"));
-            reqRes.setOurUsers(usersById);
+            reqRes.setOurUsers(new UserDTO(usersById));
             reqRes.setStatusCode(200);
             reqRes.setMessage("Users with id '" + id + "' found successfully");
         } catch (Exception e) {
@@ -153,7 +156,7 @@ public class UsersManagementService {
         return reqRes;
     }
 
-    public ReqRes updateUser(Integer userId, UserEntity updatedUser) {
+    public ReqRes updateUser(Integer userId, ReqRes updatedUser) {
         ReqRes reqRes = new ReqRes();
         try {
             Optional<UserEntity> userOptional = usersRepo.findById(Long.valueOf(userId));
@@ -174,7 +177,7 @@ public class UsersManagementService {
                 }
 
                 UserEntity savedUser = usersRepo.save(existingUser);
-                reqRes.setOurUsers(savedUser);
+                reqRes.setOurUsers(new UserDTO(savedUser));
                 reqRes.setStatusCode(200);
                 reqRes.setMessage("User updated successfully");
             } else {
@@ -192,7 +195,7 @@ public class UsersManagementService {
         try {
             Optional<UserEntity> userOptional = usersRepo.findByEmail(email);
             if (userOptional.isPresent()) {
-                reqRes.setOurUsers(userOptional.get());
+                reqRes.setOurUsers(new UserDTO(userOptional.get()));
                 reqRes.setStatusCode(200);
                 reqRes.setMessage("successful");
             } else {
@@ -205,5 +208,16 @@ public class UsersManagementService {
             reqRes.setMessage("Error occurred while getting user info: " + e.getMessage());
         }
         return reqRes;
+    }
+    public Long getMyId(String email) {
+        ReqRes reqRes = new ReqRes();
+        Optional<UserEntity> userOptional = usersRepo.findByEmail(email);
+        Long userId;
+        if (userOptional.isPresent()) {
+            userId = userOptional.get().getId();
+        }else{
+            userId = 0L;
+        }
+        return userId;
     }
 }

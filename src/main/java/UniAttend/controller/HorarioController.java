@@ -1,6 +1,6 @@
 package UniAttend.controller;
 
-import UniAttend.dto.ReqResHorario;
+import UniAttend.request.ReqResHorario;
 import UniAttend.entity.Horario;
 import UniAttend.service.HorarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/admin")
 public class HorarioController {
     @Autowired
     private HorarioService horarioService;
@@ -36,5 +37,4 @@ public class HorarioController {
     public ResponseEntity<ReqResHorario> getHorarioByID(@PathVariable Long horarioId) {
         return ResponseEntity.ok(horarioService.getHorarioById(horarioId));
     }
-
 }

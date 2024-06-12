@@ -1,5 +1,6 @@
-package UniAttend.dto;
+package UniAttend.request;
 
+import UniAttend.dto.UserDTO;
 import UniAttend.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,7 +27,7 @@ public class ReqRes {
     private String telefono;
     private String direccion;
     private String ci;
-    private UserEntity ourUsers;
-    private List<UserEntity> ourUsersList;
+    private UserDTO ourUsers;
+    private List<UserDTO> ourUsersList;
 
 }

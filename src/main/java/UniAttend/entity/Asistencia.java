@@ -6,16 +6,20 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "horarios")
+@Table(name = "asistencias")
 @Data
-public class Horario {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Asistencia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String dia;
-    private String horarioInicio;
-    private String horarioFin;
+    private LocalDate fecha;
+    private String estado;
+
+    @ManyToOne
+    @JoinColumn(name = "programacion_horario_id")
+    private ProgramacionHorario programacionHorario;
 }
