@@ -53,11 +53,16 @@ public class ProgramacionController {
         return ResponseEntity.ok(programacionService.getCarreras(programacionId));
     }
 
-    @GetMapping("/admin/programacion/listar/usuario")
+    @GetMapping("/adminuser/programacion/listar/usuario")
     public ResponseEntity<ReqResProgramacion> listarUsuario() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Long usuarioId = usersManagementService.getMyId(email);
+        return ResponseEntity.ok(programacionService.listar(usuarioId));
+    }
+
+    @GetMapping("/admin/programacion/listar/usuario/{usuarioId}")
+    public ResponseEntity<ReqResProgramacion> listarUsuario(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(programacionService.listar(usuarioId));
     }
 

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "asistencias")
@@ -18,6 +19,11 @@ public class Asistencia {
     private Long id;
     private LocalDate fecha;
     private String estado;
+    private LocalTime hora;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private UserEntity usuario;
 
     @ManyToOne
     @JoinColumn(name = "programacion_horario_id")

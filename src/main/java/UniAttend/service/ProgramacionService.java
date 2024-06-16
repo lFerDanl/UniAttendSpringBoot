@@ -151,6 +151,7 @@ public class ProgramacionService {
         ReqResProgramacion resp = new ReqResProgramacion();
 
         try {
+            System.out.println("UsuarioId: "+usuarioId);
             // Buscar programaciones por el ID del usuario
             List<ProgramacionAcademica> programaciones = programacionRepository.findByUsuarioId(usuarioId);
 
@@ -175,15 +176,8 @@ public class ProgramacionService {
             LocalDate fechaActual = LocalDate.now();
             String diaActual = obtenerDiaEnEspanol(fechaActual.getDayOfWeek().toString().toUpperCase());
 
-            // Log para depuración
-            System.out.println("Usuario ID: " + usuarioId);
-            System.out.println("Día actual: " + diaActual);
-
             // Obtener todas las programaciones académicas del usuario
             List<ProgramacionAcademica> programaciones = programacionRepository.findByUsuarioId(usuarioId);
-
-            // Log para depuración
-            System.out.println("Programaciones académicas encontradas: " + programaciones.size());
 
             // Crear una lista para las programaciones horarias del día de hoy
             List<ProgramacionHorarioDTO> programacionHorarioDTOs = new ArrayList<>();
@@ -192,17 +186,11 @@ public class ProgramacionService {
                 // Obtener las programaciones horarias de la programación académica
                 List<ProgramacionHorario> programacionHorarios = programacionHorarioRepository.findByProgramacionAcademica(programacion);
 
-                // Log para depuración
-                System.out.println("Programación académica ID: " + programacion.getId() + ", Horarios encontrados: " + programacionHorarios.size());
-
                 // Filtrar las programaciones horarias por el día de hoy
                 List<ProgramacionHorarioDTO> horariosDeHoy = programacionHorarios.stream()
                         .filter(ph -> ph.getHorario().getDia().equalsIgnoreCase(diaActual))
                         .map(ProgramacionHorarioDTO::new)
                         .collect(Collectors.toList());
-
-                // Log para depuración
-                System.out.println("Horarios de hoy encontrados para programación académica ID: " + programacion.getId() + ": " + horariosDeHoy.size());
 
                 // Agregar las programaciones horarias filtradas a la lista final
                 programacionHorarioDTOs.addAll(horariosDeHoy);

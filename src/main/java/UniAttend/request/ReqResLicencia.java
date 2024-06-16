@@ -1,5 +1,6 @@
 package UniAttend.request;
 
+import UniAttend.dto.LicenciaDTO;
 import UniAttend.entity.Licencia;
 import UniAttend.entity.ProgramacionAcademica;
 import UniAttend.entity.UserEntity;
@@ -22,9 +23,6 @@ public class ReqResLicencia {
     private String fechaInicio;
     private String fechaFin;
     private String estado;
-    private Licencia licencia;
-    private List<Licencia> licenciaList;
-    private ProgramacionAcademica programacionAcademica; // Relación con programación académica
-    private UserEntity usuario; // Relación con usuario
-
+    private LicenciaDTO licencia;
+    private List<LicenciaDTO> licenciaList;
 }

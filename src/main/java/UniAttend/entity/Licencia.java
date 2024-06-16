@@ -16,12 +16,6 @@ public class Licencia {
     private String fechaFin;
     private String estado;
 
-
-    // Relación con programación académica
-    @ManyToOne
-    @JoinColumn(name = "programacion_academica_id")
-    private ProgramacionAcademica programacionAcademica;
-
     // Relación con usuario
     @ManyToOne
     @JoinColumn(name = "usuario_id")
