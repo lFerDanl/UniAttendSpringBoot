@@ -21,7 +21,8 @@ public class  UniAttendApplication {
 	CommandLineRunner init(UserRepository userRepository, PasswordEncoder passwordEncoder,
 						   AulaRepository aulaRepository, ModuloRepository moduloRepository,
 						   FacultadRepository facultadRepository, CarreraRepository carreraRepository,
-						   HorarioRepository horarioRepository, MateriaRepository materiaRepository
+						   HorarioRepository horarioRepository, MateriaRepository materiaRepository,
+						   GrupoRepository grupoRepository
 	) {
 		return args -> {
 
@@ -107,38 +108,38 @@ public class  UniAttendApplication {
 			// Crear y guardar horarios
 			Horario horario1 = new Horario();
 			horario1.setDia("Lunes");
-			horario1.setHorarioInicio("7:00");
-			horario1.setHorarioFin("8:00");
+			horario1.setHorarioInicio("07:00");
+			horario1.setHorarioFin("08:00");
 			horarioRepository.save(horario1);
 
 			Horario horario2 = new Horario();
 			horario2.setDia("Miércoles");
-			horario2.setHorarioInicio("7:00");
-			horario2.setHorarioFin("8:00");
+			horario2.setHorarioInicio("07:00");
+			horario2.setHorarioFin("08:00");
 			horarioRepository.save(horario2);
 
 			Horario horario3 = new Horario();
 			horario3.setDia("Viernes");
-			horario3.setHorarioInicio("7:00");
-			horario3.setHorarioFin("8:00");
+			horario3.setHorarioInicio("07:00");
+			horario3.setHorarioFin("08:00");
 			horarioRepository.save(horario3);
 
 			Horario horario4 = new Horario();
 			horario4.setDia("Lunes");
-			horario4.setHorarioInicio("8:00");
-			horario4.setHorarioFin("9:00");
+			horario4.setHorarioInicio("08:00");
+			horario4.setHorarioFin("09:00");
 			horarioRepository.save(horario4);
 
 			Horario horario5 = new Horario();
 			horario5.setDia("Miércoles");
-			horario5.setHorarioInicio("8:00");
-			horario5.setHorarioFin("9:00");
+			horario5.setHorarioInicio("08:00");
+			horario5.setHorarioFin("09:00");
 			horarioRepository.save(horario5);
 
 			Horario horario6 = new Horario();
 			horario6.setDia("Viernes");
-			horario6.setHorarioInicio("8:00");
-			horario6.setHorarioFin("9:00");
+			horario6.setHorarioInicio("08:00");
+			horario6.setHorarioFin("09:00");
 			horarioRepository.save(horario6);
 
 			// Crear y guardar materias
@@ -161,6 +162,18 @@ public class  UniAttendApplication {
 			Materia materia5 = new Materia();
 			materia5.setNombre("Programación");
 			materiaRepository.save(materia5);
+
+			Grupo grupo1 = new Grupo();
+			grupo1.setNombre("SA");
+			grupoRepository.save(grupo1);
+
+			Grupo grupo2 = new Grupo();
+			grupo2.setNombre("SB");
+			grupoRepository.save(grupo2);
+
+			Grupo grupo3 = new Grupo();
+			grupo3.setNombre("SC");
+			grupoRepository.save(grupo3);
 		};
 	}
 }
