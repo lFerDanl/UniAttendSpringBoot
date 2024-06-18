@@ -2,6 +2,7 @@ package UniAttend.controller;
 
 import UniAttend.request.ReqRes;
 import UniAttend.request.ReqResProgramacion;
+import UniAttend.request.ResponseProgramacion;
 import UniAttend.service.ProgramacionService;
 import UniAttend.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +44,12 @@ public class ProgramacionController {
         return ResponseEntity.ok(programacionService.getProgramacionById(programacionId));
     }
 
-    @GetMapping("/admin/programacion/{programacionId}/horarios")
+    @GetMapping("/adminuser/programacion/{programacionId}/horarios")
     public ResponseEntity<ReqResProgramacion> getProgramacionHorarios(@PathVariable Long programacionId) {
         return ResponseEntity.ok(programacionService.getProgramacionHorarios(programacionId));
     }
 
-    @GetMapping("/admin/programacion/{programacionId}/carreras")
+    @GetMapping("/adminuser/programacion/{programacionId}/carreras")
     public ResponseEntity<ReqResProgramacion> getCarreras(@PathVariable Long programacionId) {
         return ResponseEntity.ok(programacionService.getCarreras(programacionId));
     }
@@ -61,9 +62,27 @@ public class ProgramacionController {
         return ResponseEntity.ok(programacionService.listar(usuarioId));
     }
 
-    @GetMapping("/admin/programacion/listar/usuario/{usuarioId}")
-    public ResponseEntity<ReqResProgramacion> listarUsuario(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(programacionService.listar(usuarioId));
+    @GetMapping("/adminuser/programaciones/listar/usuario")
+    public ResponseEntity<ResponseProgramacion> listarProgramacionesUsuario() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long usuarioId = usersManagementService.getMyId(email);
+        System.out.println("funcion controler");
+        System.out.println("usuarioId: "+usuarioId);
+        return ResponseEntity.ok(programacionService.listarProgramacionesUsuario(usuarioId));
+    }
+
+    @GetMapping("/adminuser/programacion/clasesDeHoy/usuario")
+    public ResponseEntity<ResponseProgramacion> clasesHoy() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long usuarioId = usersManagementService.getMyId(email);
+        return ResponseEntity.ok(programacionService.clasesHoy(usuarioId));
+    }
+
+    @GetMapping("/adminuser/programaciones/usuario/{usuarioId}")
+    public ResponseEntity<ResponseProgramacion> listarProgramacionesUsuario(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(programacionService.listarProgramacionesUsuario(usuarioId));
     }
 
     @GetMapping("/adminuser/programacion/clasesDeHoy")
