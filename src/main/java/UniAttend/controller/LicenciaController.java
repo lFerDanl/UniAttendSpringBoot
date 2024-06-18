@@ -38,9 +38,12 @@ public class LicenciaController {
         return ResponseEntity.ok(licenciaService.eliminar(licenciaId));
     }
 
-    @GetMapping("/admin/licencia/listar")
-    public ResponseEntity<ReqResLicencia> listar() {
-        return ResponseEntity.ok(licenciaService.listar());
+    @GetMapping("/adminuser/licencia/listar/usuario")
+    public ResponseEntity<ReqResLicencia> listarByUsuarioId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long usuarioId = usersManagementService.getMyId(email);
+        return ResponseEntity.ok(licenciaService.listarByUsuarioId(usuarioId));
     }
 
     @GetMapping("/adminuser/licencia/{licenciaId}")
@@ -48,16 +51,13 @@ public class LicenciaController {
         return ResponseEntity.ok(licenciaService.getLicenciaById(licenciaId));
     }
 
-    @GetMapping("/admin/licencia/listar/{usuarioId}")
-    public ResponseEntity<ReqResLicencia> listarByUsuarioId(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(licenciaService.listarByUsuarioId(usuarioId));
+    @GetMapping("/admin/licencia/listar")
+    public ResponseEntity<ReqResLicencia> listar() {
+        return ResponseEntity.ok(licenciaService.listar());
     }
 
-    @GetMapping("/adminuser/licencia/listar/usuario")
-    public ResponseEntity<ReqResLicencia> listarByUsuarioId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Long usuarioId = usersManagementService.getMyId(email);
+    @GetMapping("/admin/licencia/listar/{usuarioId}")
+    public ResponseEntity<ReqResLicencia> listarByUsuarioId(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(licenciaService.listarByUsuarioId(usuarioId));
     }
 

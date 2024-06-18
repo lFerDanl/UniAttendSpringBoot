@@ -1,12 +1,10 @@
 package UniAttend.service;
 
-import UniAttend.dto.AulaDTO;
-import UniAttend.dto.CarreraDTO;
-import UniAttend.dto.ProgramacionDTO;
-import UniAttend.dto.ProgramacionHorarioDTO;
+import UniAttend.dto.*;
 import UniAttend.entity.*;
 import UniAttend.repository.*;
 import UniAttend.request.ReqResProgramacion;
+import UniAttend.request.ResponseProgramacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -169,6 +167,75 @@ public class ProgramacionService {
         }
         return resp;
     }
+
+    public ResponseProgramacion listarProgramacionesUsuario(Long usuarioId) {
+        ResponseProgramacion resp = new ResponseProgramacion();
+
+        try {
+            // Buscar programaciones por el ID del usuario
+            List<ProgramacionAcademica> programaciones = programacionRepository.findByUsuarioId(usuarioId);
+
+
+            // Mapear cada objeto ProgramacionAcademica a su respectivo DTO
+            List<Programacion> programacions = programaciones.stream()
+                    .map(Programacion::new) // Suponiendo que tienes un constructor en ProgramacionDTO que acepta ProgramacionAcademica como parámetro
+                    .collect(Collectors.toList());
+
+            resp.setProgramacionList(programacions);
+            resp.setMessage("Programaciones exitosamente");
+            resp.setStatusCode(200);
+        } catch (Exception e) {
+            resp.setStatusCode(500);
+            resp.setMessage("Error occurred: " + e.getMessage());
+        }
+        return resp;
+    }
+
+    public ResponseProgramacion clasesHoy(Long usuarioId) {
+        ResponseProgramacion resp = new ResponseProgramacion();
+        try {
+            LocalDate fechaActual = LocalDate.now();
+            String diaActual = obtenerDiaEnEspanol(fechaActual.getDayOfWeek().toString().toUpperCase());
+
+            // Obtener todas las programaciones académicas del usuario
+            List<ProgramacionAcademica> programaciones = programacionRepository.findByUsuarioId(usuarioId);
+
+            // Crear una lista para las clases de hoy
+            List<Programacion> clasesDeHoy = new ArrayList<>();
+
+            for (ProgramacionAcademica programacion : programaciones) {
+                // Obtener las programaciones horarias de la programación académica para el día de hoy
+                List<ProgramacionHorario> programacionHorarios = programacionHorarioRepository.findByProgramacionAcademica(programacion);
+
+                // Filtrar las programaciones horarias por el día de hoy
+                List<ProgramacionHr> horariosDeHoy = programacionHorarios.stream()
+                        .filter(ph -> ph.getHorario().getDia().equalsIgnoreCase(diaActual))
+                        .map(ProgramacionHr::new)
+                        .collect(Collectors.toList());
+
+                // Crear una instancia de Programacion que represente las clases de hoy
+                Programacion claseDeHoy = new Programacion(programacion, true); // Utiliza el constructor con bandera
+
+                // Agregar los horarios de hoy a la clase de hoy
+                claseDeHoy.setProgramacionHorarios(horariosDeHoy);
+
+                // Agregar la clase de hoy a la lista final
+                clasesDeHoy.add(claseDeHoy);
+            }
+
+            // Establecer la lista de clases de hoy en la respuesta
+            resp.setProgramacionList(clasesDeHoy);
+            resp.setMessage("Clases de hoy para el usuario recuperadas exitosamente");
+            resp.setStatusCode(200);
+        } catch (Exception e) {
+            resp.setStatusCode(500);
+            resp.setMessage("Error occurred: " + e.getMessage());
+            e.printStackTrace(); // Log para depuración de errores
+        }
+        return resp;
+    }
+
+
 
     public ReqResProgramacion listarClasesDeHoy(Long usuarioId) {
         ReqResProgramacion resp = new ReqResProgramacion();

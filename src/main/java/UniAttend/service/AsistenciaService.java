@@ -1,6 +1,8 @@
 package UniAttend.service;
 
 import UniAttend.dto.AsistenciaDTO;
+import UniAttend.dto.AsistenciaE;
+import UniAttend.dto.AsistenciaN;
 import UniAttend.dto.AulaDTO;
 import UniAttend.entity.*;
 import UniAttend.repository.ProgramacionHrRepository;
@@ -8,6 +10,7 @@ import UniAttend.repository.ProgramacionRepository;
 import UniAttend.repository.UserRepository;
 import UniAttend.request.ReqResAsistencia;
 import UniAttend.repository.AsistenciaRepository;
+import UniAttend.request.ResponseAsistencia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -215,6 +218,72 @@ public class AsistenciaService {
         return response;
     }
 
+    public ResponseAsistencia getAsistenciaHoy(Long programacionHorarioId) {
+        ResponseAsistencia response = new ResponseAsistencia();
+        try {
+            LocalDate fechaActual = LocalDate.now();
+            LocalTime horaActual = LocalTime.now(); // Obtener la hora actual
+
+            Optional<ProgramacionHorario> optionalProgramacionHorario = programacionHorarioRepository.findById(programacionHorarioId);
+            if (optionalProgramacionHorario.isPresent()) {
+                ProgramacionHorario programacionHorario = optionalProgramacionHorario.get();
+                Horario horario = programacionHorario.getHorario();
+
+                // Verificar que el día actual coincida con el día de la programación horaria
+                String diaActual = obtenerDiaEnEspanol(fechaActual.getDayOfWeek().toString().toUpperCase());
+                if (!horario.getDia().equalsIgnoreCase(diaActual)) {
+                    response.setStatusCode(400);
+                    response.setMessage("Hoy no hay clases programadas para esta programación horaria");
+                    return response;
+                }
+
+                // Convertir horarios a LocalTime
+
+                LocalTime horarioInicio = LocalTime.parse(horario.getHorarioInicio());
+                LocalTime horarioFin = LocalTime.parse(horario.getHorarioFin());
+
+                // Buscar asistencias registradas para la fecha actual y esta programación horaria
+                List<Asistencia> asistencias = asistenciaRepository.findByProgramacionHorarioAndFecha(programacionHorario, fechaActual);
+                boolean asistenciaEncontrada = asistencias.stream()
+                        .anyMatch(a -> a.getProgramacionHorario().equals(programacionHorario) &&
+                                !horaActual.isBefore(horarioInicio) &&
+                                !horaActual.isAfter(horarioFin));
+                if (asistenciaEncontrada) {
+                    Asistencia asistencia = asistencias.stream()
+                            .filter(a -> !horaActual.isBefore(horarioInicio) &&
+                                    !horaActual.isAfter(horarioFin))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (asistencia != null) {
+                        response.setAsistencia(new AsistenciaE(asistencia));
+                        response.setStatusCode(200);
+                        response.setMessage("Asistencia encontrada correctamente");
+                    } else {
+                        AsistenciaE ausente = new AsistenciaE();
+                        ausente.setEstado("AUSENTE");
+                        response.setAsistencia(ausente);
+                        response.setStatusCode(200);
+                        response.setMessage("Asistencia no encontrada para este intervalo de tiempo");
+                    }
+                } else {
+                    AsistenciaE ausente = new AsistenciaE();
+                    ausente.setEstado("AUSENTE");
+                    response.setAsistencia(ausente);
+                    response.setStatusCode(200);
+                    response.setMessage("No se encontraron asistencias para esta programación horaria hoy");
+                }
+            } else {
+                response.setStatusCode(404);
+                response.setMessage("Programación de horario no encontrada");
+            }
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setError(e.getMessage());
+        }
+        return response;
+    }
+
     private String obtenerDiaEnEspanol(String diaEnIngles) {
         switch (diaEnIngles) {
             case "MONDAY":
@@ -241,6 +310,21 @@ public class AsistenciaService {
         try {
             List<Asistencia> asistencias = (List<Asistencia>) asistenciaRepository.findAll();
             List<AsistenciaDTO> asistenciaDTOs = asistencias.stream().map(AsistenciaDTO::new).collect(Collectors.toList());
+            respuesta.setAsistenciaList(asistenciaDTOs);
+            respuesta.setMessage("Asistencias recuperadas exitosamente");
+            respuesta.setStatusCode(200);
+        } catch (Exception e) {
+            respuesta.setStatusCode(500);
+            respuesta.setError(e.getMessage());
+        }
+        return respuesta;
+    }
+
+    public ResponseAsistencia listarAsistenciasUsuario(Long usuarioId) {
+        ResponseAsistencia respuesta = new ResponseAsistencia();
+        try {
+            List<Asistencia> asistencias = asistenciaRepository.findByUsuarioId(usuarioId);
+            List<AsistenciaN> asistenciaDTOs = asistencias.stream().map(AsistenciaN::new).collect(Collectors.toList());
             respuesta.setAsistenciaList(asistenciaDTOs);
             respuesta.setMessage("Asistencias recuperadas exitosamente");
             respuesta.setStatusCode(200);

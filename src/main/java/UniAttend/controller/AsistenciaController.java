@@ -4,6 +4,7 @@ import UniAttend.request.ReqResAsistencia;
 import UniAttend.entity.Asistencia;
 import UniAttend.request.ReqResHorario;
 import UniAttend.request.ReqResProgramacion;
+import UniAttend.request.ResponseAsistencia;
 import UniAttend.service.AsistenciaService;
 import UniAttend.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,19 @@ public class AsistenciaController {
     @GetMapping("/admin/asistencia/listar")
     public ResponseEntity<ReqResAsistencia> listar() {
         return ResponseEntity.ok(asistenciaService.listar());
+    }
+    //-------------------------------------------------------------------
+    @GetMapping("/adminuser/asistenciahoy/{programacionHorarioId}")
+    public ResponseEntity<ResponseAsistencia> getAsistenciaHoy(@PathVariable Long programacionHorarioId) {
+        return ResponseEntity.ok(asistenciaService.getAsistenciaHoy(programacionHorarioId));
+    }
+
+    @GetMapping("/adminuser/asistencia/listar/usuario")
+    public ResponseEntity<ResponseAsistencia> listarAsistenciasUsuario() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long usuarioId = usersManagementService.getMyId(email);
+        return ResponseEntity.ok(asistenciaService.listarAsistenciasUsuario(usuarioId));
     }
 
 

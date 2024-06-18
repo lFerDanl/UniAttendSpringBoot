@@ -23,6 +23,7 @@ public class ReporteController {
     // Endpoint para generar y descargar un reporte de asistencias en formato PDF
     @GetMapping("/asistencias/pdf")
     public ResponseEntity<byte[]> generarReporteAsistenciasPDF() {
+        System.out.println("reporte");
         byte[] pdfBytes;
         try {
             pdfBytes = reporteService.generarReporteAsistenciasPDF();

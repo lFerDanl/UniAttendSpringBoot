@@ -1,5 +1,8 @@
 package UniAttend.service;
 
+import UniAttend.dto.AsistenciaDTO;
+import UniAttend.dto.AulaDTO;
+import UniAttend.dto.ProgramacionDTO;
 import UniAttend.entity.Asistencia;
 import UniAttend.entity.ProgramacionAcademica;
 import UniAttend.repository.AsistenciaRepository;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReporteService {
@@ -32,29 +36,29 @@ public class ReporteService {
     // Método para generar un reporte PDF de asistencias
     public byte[] generarReporteAsistenciasPDF() throws DocumentException {
         List<Asistencia> asistencias = (List<Asistencia>) asistenciaRepository.findAll(); // Obtener todas las asistencias
-
-        return generarReportePDF(asistencias);
+        List<AsistenciaDTO> asistenciaDTOS = asistencias.stream().map(AsistenciaDTO::new).collect(Collectors.toList());
+        return generarReportePDF(asistenciaDTOS);
     }
 
     // Método para generar un reporte PDF de programaciones académicas
     public byte[] generarReporteProgramacionesPDF() throws DocumentException {
         List<ProgramacionAcademica> programaciones = (List<ProgramacionAcademica>) programacionAcademicaRepository.findAll(); // Obtener todas las programaciones académicas
-
-        return generarReportePDF(programaciones);
+        List<ProgramacionDTO> programacionDTOS = programaciones.stream().map(ProgramacionDTO::new).collect(Collectors.toList());
+        return generarReportePDF(programacionDTOS);
     }
 
     // Método para generar un reporte Excel de asistencias
     public byte[] generarReporteAsistenciasExcel() throws IOException {
         List<Asistencia> asistencias = (List<Asistencia>) asistenciaRepository.findAll(); // Obtener todas las asistencias
-
-        return generarReporteExcel(asistencias);
+        List<AsistenciaDTO> asistenciaDTOS = asistencias.stream().map(AsistenciaDTO::new).collect(Collectors.toList());
+        return generarReporteExcel(asistenciaDTOS);
     }
 
     // Método para generar un reporte Excel de programaciones académicas
     public byte[] generarReporteProgramacionesExcel() throws IOException {
         List<ProgramacionAcademica> programaciones = (List<ProgramacionAcademica>) programacionAcademicaRepository.findAll(); // Obtener todas las programaciones académicas
-
-        return generarReporteExcel(programaciones);
+        List<ProgramacionDTO> programacionDTOS = programaciones.stream().map(ProgramacionDTO::new).collect(Collectors.toList());
+        return generarReporteExcel(programacionDTOS);
     }
 
     // Método para generar un reporte PDF o Excel genérico
